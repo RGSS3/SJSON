@@ -3,8 +3,8 @@ class JSONParser
   def raise(a)
     utext = @text[0, @pos]
     lines = utext.count("\n") + 1
-    cols  = utext.sub(/^.*\n/, "").length
-    super SyntaxError, "JSONParser: line #{lines} col #{cols}, #{a}"
+    cols = utext.sub(/^.*\n/, "").length
+    super SyntaxError, "JSONParser: line #{lines} col #{@pos - cols}, #{a}"
   end
 
   def initialize(text)
@@ -76,7 +76,7 @@ class JSONParser
       ws
       case
       when peek?(",")
-        match ","; next
+        match ","; raise "unexpected }" if peek?("}"); next
       when peek?("}")
         match "}"; break
       else
@@ -99,7 +99,7 @@ class JSONParser
       ws;
       case
       when peek?(",")
-         match ","; next
+         match ","; raise "unexpected ]" if peek?("]"); next
       when peek?("]")
          match "]"; break
       else
@@ -120,7 +120,7 @@ class JSONParser
     when peek?("{") then object
     when peek?("t") then match("t"); match("r"); match("u"); match("e"); true
     when peek?("f") then match("f"); match("a"); match("l"); match("s"); match("e"); false
-    when peek?("n") then match("n"); match("u"); match("l"); match("l"); ()
+    when peek?("n") then match("n"); match("i"); match("l"); ()
     end
   ensure
     $@.shift if $@
@@ -198,5 +198,8 @@ class JSONParser
   end
 end
 
-x = JSONParser.new %{[666]}
-puts x.parse
+x = JSONParser.new %{[66
+,
+"",]
+}
+p x.parse
