@@ -120,7 +120,7 @@ class JSONParser
     when peek?("{") then object
     when peek?("t") then match("t"); match("r"); match("u"); match("e"); true
     when peek?("f") then match("f"); match("a"); match("l"); match("s"); match("e"); false
-    when peek?("n") then match("n"); match("i"); match("l"); ()
+    when peek?("n") then match("n"); match("u"); match("l"); match("l"); ()
     end
   ensure
     $@.shift if $@
