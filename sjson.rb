@@ -199,4 +199,4 @@ class JSONParser
 end
 
 x = JSONParser.new %{[666]}
-puts x.parse[0].force_encoding("GBK")
+puts x.parse
